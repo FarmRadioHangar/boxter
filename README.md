@@ -21,4 +21,4 @@ The sections `[all], [0.1.0] etc ` defines the versions of the playbook. The key
 
 __IMPORTANT__ don't forget to add the `=` sign after the host name. The configuration is nini we need to add this to be compliant with the parser but it has no effect whatsoeve.
 
-So that sample says provision voxbox version `0.1.0` for a host named `mambojambo`
+So that sample says provision voxbox version `0.1.0` for a host named `habarimaalum`
