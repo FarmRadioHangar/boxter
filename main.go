@@ -37,10 +37,6 @@ func main() {
 					Name:  "ssh",
 					Usage: "ssh connection url",
 				},
-				cli.BoolFlag{
-					Name:  "force",
-					Usage: "will force the operation",
-				},
 			},
 		},
 	}
