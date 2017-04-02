@@ -17,7 +17,7 @@ mambojambo=
 `
 
 func TestConfig(t *testing.T) {
-	cfg := newConfig()
+	cfg := &config{hosts: make(map[string]string)}
 	err := cfg.load([]byte(sample))
 	if err != nil {
 		t.Fatal(err)
