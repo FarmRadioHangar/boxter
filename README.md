@@ -2,9 +2,9 @@
 
 boxter is a commandline application which helps track and sync multiple voxbox playbooks between machines.
 
-__Dependencies__
+## Dependencies
 
-- rsync boxter relies on rsync to update playbooks
+- `rsync` boxter relies on rsync to update playbooks
 
 ## Commands
 
