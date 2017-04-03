@@ -16,7 +16,7 @@ import (
 
 type config struct {
 	HostFile          string `json:"hostsFile"`
-	LocalPlaybookDir  string `json:"loaclPlaybookDIr"`
+	LocalPlaybookDir  string `json:"localPlaybookDIr"`
 	RemotePlaybookDir string `json:"remotePlaybookDIr"`
 	hosts             map[string]string
 	plays             playList
