@@ -34,6 +34,14 @@ The `--config` points to a simple configuration file which has the following for
 }
 ```
 
+You can also specify the version of the playbook you want to sync as the first argument to the sync command
+
+```
+boxter sync --config /path/to/config  0.1.0
+```
+
+This way, `0.1.0` will take precedence over  the version you specified on the ini file.
+
 boxter uses a ini configuration file to determine which versions of the voxbox playbook should be provisioned for specific hosts.
 In the sample config above `hostsFile` is the path to this configuration file.
 

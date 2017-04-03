@@ -56,6 +56,7 @@ func sync(ctx *cli.Context) error {
 	ssh := ctx.String("ssh")
 	cFile := ctx.String("config")
 	rDir := ctx.String("remote-playbook-dir")
+	ver := ctx.Args().First()
 	b, err := ioutil.ReadFile(cFile)
 	if err != nil {
 		return err
@@ -69,8 +70,12 @@ func sync(ctx *cli.Context) error {
 	}
 	v, ok := cfg.Get(host)
 	if !ok {
-		fmt.Printf("can't find the host %sin the host file, falling back to latest\n", host)
-		v = "latest"
+		if ver != "" {
+			v = ver
+		} else {
+			fmt.Printf("can't find the host %sin the host file, falling back to latest\n", host)
+			v = "latest"
+		}
 	}
 	if cfg.hasPlay(v) {
 		if v == "latest" {
