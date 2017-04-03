@@ -40,3 +40,13 @@ OPTIONS:
    --host value    the name of the host machine
    --ssh value     ssh connection url
 ```
+
+The `--config` points to a simple configuration file which has the following formal
+
+```json
+{
+	"hostsFile": "path/to/hosts/ini/file",
+	"locaclPlaybookDIr": "/path/to the/local/playbooks",
+	"remotePlaybookDIr": "/path/to/remote/playbooks"
+}
+```
