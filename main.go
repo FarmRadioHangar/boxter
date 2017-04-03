@@ -33,6 +33,10 @@ func main() {
 					Name:  "host",
 					Usage: "the name of the host machine",
 				},
+				cli.StringFlag{
+					Name:  "remote-playbook-dir",
+					Usage: "the directory to sync playbooks to in a remote host",
+				},
 				cli.StringSliceFlag{
 					Name:  "ssh",
 					Usage: "ssh connection url",
@@ -51,6 +55,7 @@ func sync(ctx *cli.Context) error {
 	host := ctx.String("host")
 	ssh := ctx.String("ssh")
 	cFile := ctx.String("config")
+	rDir := ctx.String("remote-playbook-dir")
 	b, err := ioutil.ReadFile(cFile)
 	if err != nil {
 		return err
@@ -58,6 +63,9 @@ func sync(ctx *cli.Context) error {
 	cfg, err := newConfig(b)
 	if err != nil {
 		return err
+	}
+	if rDir != "" {
+		cfg.RemotePlaybookDir = rDir
 	}
 	v, ok := cfg.Get(host)
 	if !ok {

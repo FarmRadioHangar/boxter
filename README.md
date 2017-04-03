@@ -14,9 +14,10 @@ USAGE:
    boxter sync [command options] [arguments...]
 
 OPTIONS:
-   --config value  path to the configuration file
-   --host value    the name of the host machine
-   --ssh value     ssh connection url
+   --config value               path to the configuration file
+   --host value                 the name of the host machine
+   --remote-playbook-dir value  the directory to sync playbooks to in a remote host
+   --ssh value                  ssh connection url
 ```
 
 The `--config` points to a simple configuration file which has the following formal
