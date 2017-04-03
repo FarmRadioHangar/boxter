@@ -1,5 +1,6 @@
 # boxter
 
+boxter is a commandline application which helps track and sync multiple voxbox playbooks between machines.
 
 __Dependencies__
 
