@@ -1,6 +1,9 @@
 # boxter
 
 
+__Dependencies__
+
+- rsync boxter relies on rsync to update playbooks
 
 ## Commands
 
