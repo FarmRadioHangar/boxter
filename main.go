@@ -23,7 +23,7 @@ func main() {
 		{
 			Name:   "sync",
 			Usage:  "syncs new or specified version of playbook",
-			Action: rsync,
+			Action: sync,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "config",
