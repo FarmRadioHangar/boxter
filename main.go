@@ -41,6 +41,10 @@ func main() {
 					Name:  "ssh",
 					Usage: "ssh connection url",
 				},
+				cli.StringSliceFlag{
+					Name:  "rsh",
+					Usage: "passed to rsync",
+				},
 			},
 		},
 	}
@@ -54,6 +58,7 @@ func main() {
 func sync(ctx *cli.Context) error {
 	host := ctx.String("host")
 	ssh := ctx.String("ssh")
+	rsh := ctx.String("rsh")
 	cFile := ctx.String("config")
 	rDir := ctx.String("remote-playbook-dir")
 	ver := ctx.Args().First()
@@ -81,16 +86,16 @@ func sync(ctx *cli.Context) error {
 		if v == "latest" {
 			v = cfg.latestPlay()
 		}
-		return rsync(cfg, v, ssh)
+		return rsync(cfg, v, rsh, ssh)
 	}
 	return fmt.Errorf("no play for %s found", v)
 }
 
-func rsync(cfg *config, ver, ssh string) error {
+func rsync(cfg *config, ver, rsh, ssh string) error {
 	src := filepath.Join(cfg.LocalPlaybookDir, ver)
 	dest := filepath.Join(cfg.RemotePlaybookDir, ver)
 	cmd := exec.Command(
-		"rsync", "-vzh", "ssh", ssh, src, dest,
+		"rsync", "-z", "-rsh", fmt.Sprintf(`"%s"`, rsh), src, fmt.Sprintf("%s:%s", ssh, dest),
 	)
 	if err := cmd.Start(); err != nil {
 		return err
