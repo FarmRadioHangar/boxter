@@ -11,6 +11,8 @@ import (
 
 	"os/exec"
 
+	"strings"
+
 	"github.com/urfave/cli"
 )
 
@@ -37,11 +39,11 @@ func main() {
 					Name:  "remote-playbook-dir",
 					Usage: "the directory to sync playbooks to in a remote host",
 				},
-				cli.StringSliceFlag{
+				cli.StringFlag{
 					Name:  "ssh",
 					Usage: "ssh connection url",
 				},
-				cli.StringSliceFlag{
+				cli.StringFlag{
 					Name:  "rsh",
 					Usage: "passed to rsync",
 				},
@@ -94,9 +96,11 @@ func sync(ctx *cli.Context) error {
 func rsync(cfg *config, ver, rsh, ssh string) error {
 	src := filepath.Join(cfg.LocalPlaybookDir, ver)
 	dest := filepath.Join(cfg.RemotePlaybookDir, ver)
+	ropts := fmt.Sprintf(`--rsh='%s'`, rsh)
 	cmd := exec.Command(
-		"rsync", "-z", "-rsh", fmt.Sprintf(`"%s"`, rsh), src, fmt.Sprintf("%s:%s", ssh, dest),
+		"rsync", "-z", ropts, src, fmt.Sprintf("%s:%s", ssh, dest),
 	)
+	fmt.Println(strings.Join(cmd.Args, " "))
 	if err := cmd.Start(); err != nil {
 		return err
 	}
