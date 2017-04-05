@@ -11,8 +11,6 @@ import (
 
 	"os/exec"
 
-	"strings"
-
 	"github.com/urfave/cli"
 )
 
@@ -96,13 +94,13 @@ func sync(ctx *cli.Context) error {
 func rsync(cfg *config, ver, rsh, ssh string) error {
 	src := filepath.Join(cfg.LocalPlaybookDir, ver)
 	dest := filepath.Join(cfg.RemotePlaybookDir, ver)
-	ropts := fmt.Sprintf(`--rsh='%s'`, rsh)
 	cmd := exec.Command(
-		"rsync", "-z", ropts, src, fmt.Sprintf("%s:%s", ssh, dest),
+		"rsync", "-z", "--rsh", rsh, src, fmt.Sprintf("%s:%s", ssh, dest),
 	)
-	fmt.Println(strings.Join(cmd.Args, " "))
-	if err := cmd.Start(); err != nil {
+	b, err := cmd.CombinedOutput()
+	fmt.Println(string(b))
+	if err != nil {
 		return err
 	}
-	return cmd.Wait()
+	return nil
 }
