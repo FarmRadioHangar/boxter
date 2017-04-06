@@ -12,6 +12,7 @@ import (
 	"os/exec"
 
 	"github.com/urfave/cli"
+	"gopkg.in/ini.v1"
 )
 
 func main() {
@@ -32,6 +33,10 @@ func main() {
 				cli.StringFlag{
 					Name:  "host",
 					Usage: "the name of the host machine",
+				},
+				cli.StringFlag{
+					Name:  "boxid",
+					Usage: "unique id of the box",
 				},
 				cli.StringFlag{
 					Name:  "remote-playbook-dir",
@@ -57,6 +62,7 @@ func main() {
 
 func sync(ctx *cli.Context) error {
 	host := ctx.String("host")
+	serial := ctx.String("boxid")
 	ssh := ctx.String("ssh")
 	rsh := ctx.String("rsh")
 	cFile := ctx.String("config")
@@ -75,25 +81,48 @@ func sync(ctx *cli.Context) error {
 	}
 	v, ok := cfg.Get(host)
 	if !ok {
-		if ver != "" {
-			v = ver
-		} else {
-			fmt.Printf("can't find the host %sin the host file, falling back to latest\n", host)
-			v = "latest"
-		}
+		return uauthorized(cfg, host, serial)
 	}
-	if cfg.hasPlay(v) {
-		if v == "latest" {
-			v = cfg.latestPlay()
+	if ver != "" {
+		v.version = ver
+	}
+	if cfg.hasPlay(v.version) {
+		if v.version == "latest" {
+			v.version = cfg.latestPlay()
 		}
 		return rsync(cfg, v, rsh, ssh)
 	}
 	return fmt.Errorf("no play for %s found", v)
 }
 
-func rsync(cfg *config, ver, rsh, ssh string) error {
-	src := filepath.Join(cfg.LocalPlaybookDir, ver)
-	dest := filepath.Join(cfg.RemotePlaybookDir, ver)
+func uauthorized(cfg *config, host, id string) error {
+	f := filepath.Join(cfg.SerialDir, "unauthorized.ini")
+	u := "unauthorized"
+	_, err := os.Stat(f)
+	var o *ini.File
+	if os.IsNotExist(err) {
+		o = ini.Empty()
+		s, err := o.NewSection(u)
+		if err != nil {
+			return err
+		}
+		s.NewKey(host, id)
+
+	} else {
+		o, err = ini.Load(f)
+		if err != nil {
+			return err
+		}
+		s := o.Section(u)
+		s.NewKey(host, id)
+	}
+	return o.SaveTo(f)
+}
+
+func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
+	src := filepath.Join(cfg.LocalPlaybookDir, ver.version)
+	dest := filepath.Join(cfg.RemotePlaybookDir, "playbook")
+	fmt.Printf("syncing %s\n", ver)
 	cmd := exec.Command(
 		"rsync", "-z", "--rsh", rsh, src, fmt.Sprintf("%s:%s", ssh, dest),
 	)
@@ -102,5 +131,21 @@ func rsync(cfg *config, ver, rsh, ssh string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("OK")
+	fmt.Println("syncing mainfest")
+	o := filepath.Join(cfg.SerialDir, ver.Serial)
+	manifestFile := "voxbox-manifest.json"
+	os.MkdirAll(o, 0755)
+	hm := filepath.Join("%s:%s", ssh, filepath.Join(cfg.RemotePlaybookDir, manifestFile))
+	sm := filepath.Join(o, manifestFile)
+	cmd = exec.Command(
+		"rsync", "-z", "--rsh", rsh, hm, sm,
+	)
+	b, err = cmd.CombinedOutput()
+	fmt.Println(string(b))
+	if err != nil {
+		return err
+	}
+	fmt.Println("OK")
 	return nil
 }

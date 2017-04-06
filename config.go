@@ -15,11 +15,18 @@ import (
 )
 
 type config struct {
+	SerialDir         string `json:"boxidDir"`
 	HostFile          string `json:"hostsFile"`
 	LocalPlaybookDir  string `json:"localPlaybookDIr"`
 	RemotePlaybookDir string `json:"remotePlaybookDIr"`
-	hosts             map[string]string
+	hosts             map[string]hostProp
 	plays             playList
+}
+
+type hostProp struct {
+	Name    string
+	Serial  string
+	version string
 }
 
 type playList []string
@@ -39,7 +46,7 @@ func (p playList) Less(i, j int) bool {
 }
 
 func newConfig(src []byte) (*config, error) {
-	c := &config{hosts: make(map[string]string)}
+	c := &config{hosts: make(map[string]hostProp)}
 	err := json.Unmarshal(src, c)
 	if err != nil {
 		return nil, err
@@ -110,13 +117,13 @@ func (c *config) load(b []byte) error {
 			return err
 		}
 		for _, kn := range s.KeyStrings() {
-			c.hosts[kn] = n
+			c.hosts[kn] = hostProp{Name: kn, version: n, Serial: s.Key(kn).String()}
 		}
 	}
 	return nil
 }
 
-func (c *config) Get(host string) (string, bool) {
+func (c *config) Get(host string) (hostProp, bool) {
 	v, ok := c.hosts[host]
 	return v, ok
 }

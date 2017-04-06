@@ -17,7 +17,7 @@ mambojambo=
 `
 
 func TestConfig(t *testing.T) {
-	cfg := &config{hosts: make(map[string]string)}
+	cfg := &config{hosts: make(map[string]hostProp)}
 	err := cfg.load([]byte(sample))
 	if err != nil {
 		t.Fatal(err)
@@ -35,7 +35,7 @@ func TestConfig(t *testing.T) {
 			t.Errorf("missing host %s", v.h)
 			continue
 		}
-		if s != v.v {
+		if s.version != v.v {
 			t.Errorf("expected %s got %s", v.v, s)
 		}
 	}
