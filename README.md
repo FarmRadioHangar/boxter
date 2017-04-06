@@ -30,9 +30,10 @@ The `--config` points to a simple configuration file which has the following for
 
 ```json
 {
-	"hostsFile": "path/to/hosts/ini/file",
-	"localPlaybookDIr": "/path/to the/local/playbooks",
-	"remotePlaybookDIr": "/path/to/remote/playbooks"
+	"boxidDir": "/path/to/where/boxid/manifext/syncs",
+	"hostsFile": "/paths/to/hosts/ini/file",
+	"localPlaybookDIr": "/local/playbooks/dir",
+	"remotePlaybookDIr": "/path/to/remote/playbook/dir"
 }
 ```
 
