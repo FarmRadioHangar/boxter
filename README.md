@@ -20,8 +20,10 @@ USAGE:
 OPTIONS:
    --config value               path to the configuration file
    --host value                 the name of the host machine
+   --boxid value                unique id of the box
    --remote-playbook-dir value  the directory to sync playbooks to in a remote host
    --ssh value                  ssh connection url
+   --rsh value                  passed to rsync
 ```
 
 The `--config` points to a simple configuration file which has the following formal
