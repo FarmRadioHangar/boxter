@@ -100,25 +100,34 @@ func sync(ctx *cli.Context) error {
 func uauthorized(cfg *config, host, id string) error {
 	f := filepath.Join(cfg.SerialDir, "unauthorized.ini")
 	u := "unauthorized"
-	_, err := os.Stat(f)
+	fi, err := os.OpenFile(f, os.O_RDWR|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer fi.Close()
+	b, err := ioutil.ReadAll(fi)
+	if err != nil {
+		return err
+	}
 	var o *ini.File
-	if os.IsNotExist(err) {
-		o = ini.Empty()
-		s, err := o.NewSection(u)
-		if err != nil {
-			return err
-		}
-		s.NewKey(host, id)
-
-	} else {
+	if len(b) > 0 {
 		o, err = ini.Load(f)
 		if err != nil {
 			return err
 		}
 		s := o.Section(u)
 		s.NewKey(host, id)
+
+	} else {
+		o = ini.Empty()
+		s, err := o.NewSection(u)
+		if err != nil {
+			return err
+		}
+		s.NewKey(host, id)
 	}
-	return o.SaveTo(f)
+	_, err = o.WriteTo(fi)
+	return err
 }
 
 func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
