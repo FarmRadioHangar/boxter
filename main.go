@@ -19,7 +19,7 @@ import (
 
 func main() {
 	a := cli.NewApp()
-	a.Version = "0.1.1"
+	a.Version = "0.1.2"
 	a.Name = "boxter"
 	a.Usage = "manages syncing of playbook releases"
 	a.Commands = []cli.Command{
@@ -150,7 +150,7 @@ func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
 	hm := fmt.Sprintf("%s:%s", ssh, filepath.Join(cfg.RemotePlaybookDir, manifestFile))
 	sm := filepath.Join(o, manifestFile)
 	cmd = exec.Command(
-		"rsync", "-z", "--rsh", rsh, hm, sm,
+		"rsync", "-z", "--ignore-missing-args", "--rsh", rsh, hm, sm,
 	)
 	b, err = cmd.CombinedOutput()
 	fmt.Println(string(b))
