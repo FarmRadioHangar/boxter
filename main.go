@@ -11,6 +11,8 @@ import (
 
 	"os/exec"
 
+	"strings"
+
 	"github.com/urfave/cli"
 	"gopkg.in/ini.v1"
 )
@@ -80,7 +82,7 @@ func sync(ctx *cli.Context) error {
 		cfg.RemotePlaybookDir = rDir
 	}
 	v, ok := cfg.Get(host)
-	if !ok {
+	if !ok || strings.TrimSpace(v.Serial) != strings.TrimSpace(serial) {
 		return uauthorized(cfg, host, serial)
 	}
 	if ver != "" {
@@ -136,7 +138,7 @@ func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
 	o := filepath.Join(cfg.SerialDir, ver.Serial)
 	manifestFile := "voxbox-manifest.json"
 	os.MkdirAll(o, 0755)
-	hm := filepath.Join("%s:%s", ssh, filepath.Join(cfg.RemotePlaybookDir, manifestFile))
+	hm := fmt.Sprintf("%s:%s", ssh, filepath.Join(cfg.RemotePlaybookDir, manifestFile))
 	sm := filepath.Join(o, manifestFile)
 	cmd = exec.Command(
 		"rsync", "-z", "--rsh", rsh, hm, sm,
