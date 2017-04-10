@@ -8,8 +8,6 @@ import (
 
 	"path/filepath"
 
-	"sort"
-
 	"github.com/blang/semver"
 	"gopkg.in/ini.v1"
 )
@@ -78,14 +76,14 @@ func (c *config) loadPlays() error {
 	for _, dir := range dirs {
 		if dir.IsDir() {
 			b := filepath.Base(dir.Name())
-			_, err = semver.Make(b)
-			if err != nil {
-				return err
-			}
+			// _, err = semver.Make(b)
+			// if err != nil {
+			// 	return err
+			// }
 			p = append(p, b)
 		}
 	}
-	sort.Sort(p)
+	// sort.Sort(p)
 	c.plays = p
 	return nil
 
@@ -97,14 +95,15 @@ func (c *config) hasPlay(ver string) bool {
 			return true
 		}
 	}
-	if ver == "latest" && len(c.plays) > 0 {
-		return true
-	}
+	// if ver == "latest" && len(c.plays) > 0 {
+	// 	return true
+	// }
 	return false
 }
-func (c *config) latestPlay() string {
-	return c.plays[len(c.plays)-1]
-}
+
+// func (c *config) latestPlay() string {
+// 	return c.plays[len(c.plays)-1]
+// }
 
 func (c *config) load(b []byte) error {
 	f, err := ini.Load(b)

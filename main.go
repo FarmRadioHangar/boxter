@@ -89,9 +89,9 @@ func sync(ctx *cli.Context) error {
 		v.version = ver
 	}
 	if cfg.hasPlay(v.version) {
-		if v.version == "latest" {
-			v.version = cfg.latestPlay()
-		}
+		// if v.version == "latest" {
+		// 	v.version = cfg.latestPlay()
+		// }
 		return rsync(cfg, v, rsh, ssh)
 	}
 	return fmt.Errorf("no play for %s found", v)
