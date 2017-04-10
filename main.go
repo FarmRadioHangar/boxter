@@ -19,7 +19,7 @@ import (
 
 func main() {
 	a := cli.NewApp()
-	a.Version = "0.1.2"
+	a.Version = "0.1.3"
 	a.Name = "boxter"
 	a.Usage = "manages syncing of playbook releases"
 	a.Commands = []cli.Command{

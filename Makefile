@@ -1,4 +1,4 @@
-VERSION=0.1.2
+VERSION=0.1.3
 NAME=boxter_$(VERSION)
 OUT_DIR=bin/linux_386/boxter_$(VERSION)
 
