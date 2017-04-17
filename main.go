@@ -135,7 +135,7 @@ func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
 	dest := filepath.Join(cfg.RemotePlaybookDir, "playbook")
 	fmt.Printf("syncing %s\n", ver)
 	cmd := exec.Command(
-		"rsync", "-z", "--rsh", rsh, src, fmt.Sprintf("%s:%s", ssh, dest),
+		"rsync", "-rLptz", "--delete", "--rsh", rsh, src, fmt.Sprintf("%s:%s", ssh, dest),
 	)
 	b, err := cmd.CombinedOutput()
 	fmt.Println(string(b))
