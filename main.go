@@ -100,7 +100,7 @@ func sync(ctx *cli.Context) error {
 func uauthorized(cfg *config, host, id string) error {
 	f := filepath.Join(cfg.SerialDir, "unauthorized.ini")
 	u := "unauthorized"
-	fi, err := os.OpenFile(f, os.O_RDWR|os.O_CREATE, 0600)
+	fi, err := os.OpenFile(f, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		return err
 	}
@@ -115,8 +115,15 @@ func uauthorized(cfg *config, host, id string) error {
 		if err != nil {
 			return err
 		}
-		s := o.Section(u)
-		s.NewKey(host, id)
+		s, err := o.GetSection(u)
+		if err != nil {
+			return err
+		}
+		k, err := s.GetKey(host)
+		if err != nil {
+			return err
+		}
+		k.SetValue(id)
 
 	} else {
 		o = ini.Empty()
