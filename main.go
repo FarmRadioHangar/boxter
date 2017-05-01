@@ -138,7 +138,7 @@ func uauthorized(cfg *config, host, id string) error {
 }
 
 func rsync(cfg *config, ver hostProp, rsh, ssh string) error {
-	src := filepath.Join(cfg.LocalPlaybookDir, ver.version)
+	src := filepath.Join(cfg.LocalPlaybookDir, ver.version) + "/"
 	dest := filepath.Join(cfg.RemotePlaybookDir, "playbook")
 	fmt.Printf("syncing %s\n", ver)
 	cmd := exec.Command(
