@@ -15,8 +15,8 @@ import (
 type config struct {
 	SerialDir         string `json:"boxidDir"`
 	HostFile          string `json:"hostsFile"`
-	LocalPlaybookDir  string `json:"localPlaybookDIr"`
-	RemotePlaybookDir string `json:"remotePlaybookDIr"`
+	LocalPlaybookDir  string `json:"localPlaybookDir"`
+	RemotePlaybookDir string `json:"remotePlaybookDir"`
 	hosts             map[string]hostProp
 	plays             playList
 }
